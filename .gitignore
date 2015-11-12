@@ -6,8 +6,9 @@
 *.iml
 .idea
 
-#maven
-target
+#gradle
+.gradle
+build/
 
 # Package Files #
 *.jar
