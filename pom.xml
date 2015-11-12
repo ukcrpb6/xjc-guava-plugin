@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.danielwegener.xjc</groupId>
     <artifactId>xjc-guava-plugin</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.2</version>
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -49,6 +49,11 @@
             <url>https://github.com/danielwegener</url>
             <id>danielwegener</id>
         </developer>
+        <developer>
+            <name>Patrick Marschik</name>
+            <url>https://github.com/mikazuki</url>
+            <id>mikazuki</id>
+        </developer>
     </developers>
 
 
@@ -62,7 +67,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>13.0</version>
+            <version>18.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

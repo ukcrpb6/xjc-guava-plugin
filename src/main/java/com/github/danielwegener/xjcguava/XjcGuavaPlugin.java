@@ -15,16 +15,33 @@
  */
 package com.github.danielwegener.xjcguava;
 
-import com.sun.codemodel.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.xml.sax.ErrorHandler;
+
+import com.sun.codemodel.JBlock;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JConditional;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JExpression;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JInvocation;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JMods;
+import com.sun.codemodel.JType;
+import com.sun.codemodel.JVar;
 import com.sun.tools.xjc.BadCommandLineException;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.Outline;
-import org.xml.sax.ErrorHandler;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * <p>Generates hashCode, equals and toString methods using Guavas Objects helper class.</p>
@@ -88,16 +105,17 @@ public class XjcGuavaPlugin extends Plugin {
     protected void generateToStringMethod(JCodeModel model, JDefinedClass clazz) {
         final JMethod toStringMethod = clazz.method(JMod.PUBLIC, String.class,"toString");
         toStringMethod.annotate(Override.class);
-        final JClass objects = model.ref(com.google.common.base.Objects.class);
+        final JClass objects = model.ref(com.google.common.base.MoreObjects.class);
         final Collection<JFieldVar> superClassInstanceFields = getInstanceFields(getSuperclassFields(clazz));
         final Collection<JFieldVar> thisClassInstanceFields = getInstanceFields(clazz.fields().values());
 
         final JBlock content = toStringMethod.body();
 
-
         final JInvocation toStringHelperCall = objects.staticInvoke("toStringHelper");
         toStringHelperCall.arg(JExpr._this());
         JInvocation fluentCall = toStringHelperCall;
+
+        fluentCall.invoke("omitNullValues");
 
         for (JFieldVar superField : superClassInstanceFields) {
             fluentCall = fluentCall.invoke("add");
@@ -119,7 +137,7 @@ public class XjcGuavaPlugin extends Plugin {
 
     protected void generateHashCodeMethod(JCodeModel model, JDefinedClass clazz) {
 
-        final JClass objects = model.ref(com.google.common.base.Objects.class);
+        final JClass objects = model.ref(com.google.common.base.MoreObjects.class);
         final Collection<JFieldVar> thisClassInstanceFields = getInstanceFields(clazz.fields().values());
         final Collection<JFieldVar> superClassInstanceFields = getInstanceFields(getSuperclassFields(clazz));
         // Dont create hashCode for empty classes
@@ -154,7 +172,7 @@ public class XjcGuavaPlugin extends Plugin {
         equalsMethod.annotate(Override.class);
         final JVar other = equalsMethod.param(Object.class,"other");
 
-        final JClass objects = model.ref(com.google.common.base.Objects.class);
+        final JClass objects = model.ref(com.google.common.base.MoreObjects.class);
 
         final JBlock content = equalsMethod.body();
 
