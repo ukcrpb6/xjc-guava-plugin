@@ -15,6 +15,8 @@
  */
 package com.github.danielwegener.xjcguava;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -44,6 +46,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import static com.google.common.base.Preconditions.checkElementIndex;
+
 /**
  * <p>Generates hashCode, equals and toString methods using Guavas Objects helper class.</p>
  *
@@ -54,6 +58,7 @@ public class XjcGuavaPlugin extends Plugin {
     public static final String OPTION_NAME = "Xguava";
     public static final String SKIP_TOSTRING_PARAM = "-"+OPTION_NAME + ":skipToString";
 
+    private boolean skipToString = false;
 
     @Override
     public String getOptionName() {
@@ -67,9 +72,14 @@ public class XjcGuavaPlugin extends Plugin {
 
     }
 
-    @Override
-    public int parseArgument(Options opt, String[] args, int i) throws BadCommandLineException, IOException {
+    @VisibleForTesting
+    boolean isSkipToStringEnabled() {
+        return skipToString;
+    }
 
+    @Override
+    public int parseArgument(@Nullable Options opt, String[] args, int i) throws BadCommandLineException, IOException {
+        checkElementIndex(i, args.length);
         final String arg = args[i].trim();
         if (SKIP_TOSTRING_PARAM.equals(arg)) {
             skipToString = true;
@@ -77,8 +87,6 @@ public class XjcGuavaPlugin extends Plugin {
         }
         return 0;
     }
-
-    private boolean skipToString = false;
 
     @Override
     public boolean run(final Outline outline, final Options options, final ErrorHandler errorHandler) {
