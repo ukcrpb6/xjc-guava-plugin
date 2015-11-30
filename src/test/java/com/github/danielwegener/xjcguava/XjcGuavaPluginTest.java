@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,7 +100,7 @@ public class XjcGuavaPluginTest {
 
   @Test
   public void testGetSuperclassFields() {
-    assertThat(plugin.getSuperclassFields(aClass), equalTo(Arrays.asList(aSuperClassField)));
+    assertThat(plugin.getSuperclassFields(aClass)).containsOnly(aSuperClassField);
   }
 
   @Test
