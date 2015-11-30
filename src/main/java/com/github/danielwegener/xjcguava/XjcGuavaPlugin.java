@@ -15,14 +15,6 @@
  */
 package com.github.danielwegener.xjcguava;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.xml.sax.ErrorHandler;
-
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JCodeModel;
@@ -42,6 +34,15 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.Plugin;
 import com.sun.tools.xjc.outline.ClassOutline;
 import com.sun.tools.xjc.outline.Outline;
+import org.xml.sax.ErrorHandler;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * <p>Generates hashCode, equals and toString methods using Guavas Objects helper class.</p>
@@ -171,6 +172,7 @@ public class XjcGuavaPlugin extends Plugin {
         final JMethod equalsMethod = clazz.method(JMod.PUBLIC, model.BOOLEAN ,"equals");
         equalsMethod.annotate(Override.class);
         final JVar other = equalsMethod.param(Object.class,"other");
+        other.annotate(Nullable.class);
 
         final JClass objects = model.ref(java.util.Objects.class);
 
